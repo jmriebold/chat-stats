@@ -3,7 +3,8 @@
 """ 
 This script generates descriptive statistics from Google Hangouts logs, 
 including total words, words by speaker, etc. Hangouts transcripts should be
-in plaintext format, extracted from JSON archives with hangouts-log-reader 
+in plaintext format, extracted from JSON archives (accessible at 
+https://www.google.com/settings/takeoutwith hangouts-log-reader 
 (https://bitbucket.org/dotcs/hangouts-log-reader/).
 
 Usage:
@@ -155,15 +156,25 @@ speaker_bigram_totals = Counter()
 overall_words = Counter()
 overall_bigrams = Counter()
 
+# Store transcript file
+try:
+    transcript = sys.argv[1]
+except IndexError:
+    raise IOError("Transcript file does not exist.")
+
 # Store results dir
-results_dir = sys.argv[2]
+try:
+    results_dir = sys.argv[2]
+except IndexError:
+    raise IOError("Please enter a results directory.")
 
 # Ensure dir ends with /
 if results_dir[-1] != '/':
     results_dir = results_dir + '/'
 
-# Store transcript file
-transcript = sys.argv[1]
+# Create directory if necessary
+if not os.path.exists(results_dir):
+    os.makedirs(results_dir)
 
 # Get list of participants in chat
 names = getParticipants(transcript)
@@ -261,10 +272,6 @@ for speaker in names:
 
 # Get total number of words
 overall_total = sum(overall_words.values())
-
-# Create directory if necessary
-if not os.path.exists(results_dir):
-    os.makedirs(results_dir)
 
 # Print summary stats
 with open(results_dir + "summary.txt", 'w') as out_file:
