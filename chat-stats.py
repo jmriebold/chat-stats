@@ -10,13 +10,15 @@ Usage:
     python chat-stats.py [TRANSCRIPT] [RESULTS_DIRECTORY]
 
 The script outputs a set of results files in the desired directory. 
-summary.txt contains summary statistics for the file (total words, time to 
-read, words by speaker, etc.). words.txt lists every word used by each speaker,
-overall_ and speaker_word_frequencies.txt contain word frequencies sorted in
-descending order. overall_ and speaker_bigram_frequencies.txt contain bigram
-frequencies in descending order. word_timeseries.txt contains occurrences of
-words of interest by day, by word. Finally, day_timeseries.txt contains number
-of words used per day.
+summary.txt contains summary statistics for the file, including total words,
+time to read, words by speaker, and lexical diversity (types / tokens). 
+words.txt lists every word used by each speaker, overall_ and 
+speaker_word_frequencies.txt contain word frequencies sorted in descending 
+order. overall_ and speaker_bigram_frequencies.txt contain bigram frequencies
+in descending order. speaker_timeseries contains the number of words used per
+day by speaker. word_timeseries.txt contains occurrences of words of interest
+by day, by word. Finally, day_timeseries.txt contains number of words used 
+per day.
 """
 
 from __future__ import division
