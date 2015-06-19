@@ -272,8 +272,8 @@ overall_total = sum(overall_words.values())
 # Print summary stats
 with open(results_dir + "summary.txt", 'w') as out_file:
     out_file.write("GENERAL\n-------\n")
-    out_file.write("total length: " + str(overall_total) + " words" + "\ntime\
-        to read: " + str(round(overall_total / 250 / 60, 2)) + " hours\n\n")
+    out_file.write("total length: " + str(overall_total) + " words" + "\ntime to read: " + str(
+        round(overall_total / 250 / 60, 2)) + " hours\n\n")
 
     out_file.write("WORDS\n-----\n")
     for speaker, total in speaker_totals.most_common():
