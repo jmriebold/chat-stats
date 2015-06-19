@@ -75,8 +75,7 @@ def getDatetime(line):
 
 
 # Calculate and return timedelta between two dates
-def calculateDays(end_date):
-    start_date = datetime.date(2013, 8, 17)
+def calculateDays(start_date, end_date):
     date_delta = datetime.datetime.date(end_date) - start_date
     
     return date_delta.days
@@ -238,11 +237,11 @@ with open(transcript, 'r') as in_file:
             
             # Update timeseries data for keywords
             if word in keywords:
-                word_timeseries[keywords.index(word), calculateDays(timestamp)
+                word_timeseries[keywords.index(word), calculateDays(start_date, timestamp)
                     + 1] += 1
         
         # Update timeseries data for speakers
-        speaker_timeseries[names.index(name), calculateDays(timestamp) + 1]\
+        speaker_timeseries[names.index(name), calculateDays(start_date, timestamp) + 1]\
             += len(message)
         
         # Update day timeseries
