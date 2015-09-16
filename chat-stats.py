@@ -117,6 +117,16 @@ def process_word(word):
 
     return word
 
+
+def getbigrams(message):
+    return [word + ' ' + message[i + 1] for i, word in enumerate(message) if i + 1 <= len(message) - 1]
+
+
+def gettrigrams(message):
+    message = 'BOS BOS ' + message + 'EOS EOS'
+
+    return [word + ' ' + message[i + 1] + ' ' + message[i + 2] for i, word in enumerate(message) if i + 2 <= len(message) - 1]
+
 # Words of interest, edit this list to get timeseries data for these words
 # (e.g. for plotting over time, etc.)
 keywords = ["a", "b", "c"]
@@ -149,6 +159,7 @@ speaker_words = defaultdict(Counter)
 speaker_totals = Counter()
 speaker_bigrams = defaultdict(Counter)
 speaker_bigram_totals = Counter()
+speaker_trigrams = defaultdict(Counter)
 overall_words = Counter()
 overall_bigrams = Counter()
 
@@ -245,12 +256,18 @@ with open(transcript, 'r') as in_file:
         day_timeseries[calculate_daytime(timestamp), 0] += len(message)
 
         # Generate list of bigrams in message
-        bigrams = nltk_bigrams(message)
+        bigrams = getbigrams(message)
 
-        # Concatenate bigrams and add to dict
+        # Add bigrams to Counter
         for bigram in bigrams:
-            bigram = " ".join(bigram)
             speaker_bigrams[name][bigram] += 1
+
+        # Generate list of trigrams in message
+        trigrams = gettrigrams(message)
+
+        # Add bigrams to Counter
+        for trigram in trigrams:
+            speaker_trigrams[name][trigram] += 1
 
         previous_timestamp = timestamp
 
