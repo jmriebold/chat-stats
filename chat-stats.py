@@ -265,7 +265,7 @@ with open(transcript, 'r') as in_file:
         # Generate list of trigrams in message
         trigrams = gettrigrams(message)
 
-        # Add bigrams to Counter
+        # Add trigrams to Counter
         for trigram in trigrams:
             speaker_trigrams[name][trigram] += 1
 
