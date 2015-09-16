@@ -29,7 +29,6 @@ import re
 from collections import defaultdict, Counter
 import datetime
 
-from nltk import bigrams as nltk_bigrams
 import numpy
 
 
@@ -118,14 +117,18 @@ def process_word(word):
     return word
 
 
+# Return list of bigrams in message
 def getbigrams(message):
     return [word + ' ' + message[i + 1] for i, word in enumerate(message) if i + 1 <= len(message) - 1]
 
 
+# Return list of trigrams in message, padded with BOS/EOS
 def gettrigrams(message):
     message = 'BOS BOS ' + message + 'EOS EOS'
 
-    return [word + ' ' + message[i + 1] + ' ' + message[i + 2] for i, word in enumerate(message) if i + 2 <= len(message) - 1]
+    return [word + ' ' + message[i + 1] + ' ' + message[i + 2] for i, word in enumerate(message) if
+            i + 2 <= len(message) - 1]
+
 
 # Words of interest, edit this list to get timeseries data for these words
 # (e.g. for plotting over time, etc.)
