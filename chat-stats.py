@@ -28,6 +28,7 @@ import os
 import re
 from collections import defaultdict, Counter
 import datetime
+import random
 
 import numpy
 
@@ -124,10 +125,55 @@ def getbigrams(message):
 
 # Return list of trigrams in message, padded with BOS/EOS
 def gettrigrams(message):
-    message = 'BOS BOS ' + message + 'EOS EOS'
+    message.append('EOS')
+    message.append('EOS')
+    message.insert(0, 'BOS')
+    message.insert(0, 'BOS')
 
     return [word + ' ' + message[i + 1] + ' ' + message[i + 2] for i, word in enumerate(message) if
             i + 2 <= len(message) - 1]
+
+
+# Use trigram Markov chains to generate random text from a participant
+def generatetext(name):
+    trigrams = speaker_trigrams[name]
+
+    # Get sentence start
+    bos = [trigram for trigram in trigrams if trigram.split()[0] == 'BOS']
+
+    # Select trigram
+    next = bos[random.randint(0, len(bos) - 1)]
+
+    # Add to sentence
+    sentence = next.split()[0] + ' '
+
+    # Build sentence
+    while next.split()[2] != 'EOS':
+        # Get possible trigram transitions
+        choices = [trigram for trigram in trigrams if trigram.split()[0:2] == next.split()[1:3]]
+
+        # Get next trigram
+        next = choices[random.randint(0, len(choices) - 1)]
+
+        # Add to sentence
+        sentence = sentence + next.split()[0] + ' '
+
+    # Add remaining words
+    sentence = sentence + next.split()[1] + ' ' + next.split()[2]
+
+    # Remove BOS/EOS, strip whitespace
+    sentence = re.sub('BOS|EOS', '', sentence).strip()
+
+    # Add period
+    sentence += '.'
+
+    sentence = name.title() + ': ' + sentence.capitalize()
+
+    # Capitalize "I"
+    sentence = re.sub('i(?=\')', 'I', sentence)
+    sentence = re.sub(' i ', ' I ', sentence)
+
+    return sentence
 
 
 # Words of interest, edit this list to get timeseries data for these words
