@@ -43,7 +43,7 @@ def process_name(line):
 
 # Return set of chat participants
 def get_participants(transcript):
-    with open(transcript, 'r') as in_file:
+    with open(transcript, 'r', encoding="utf8") as in_file:
         names = list(set(process_name(line).lower() for line in
                          in_file.readlines() if re.match("^\[hangouts.py\]", line) is not
                          None))
@@ -236,7 +236,7 @@ if not os.path.exists(results_dir):
 names = get_participants(transcript)
 
 # Calculate daterange
-with open(transcript, 'r') as in_file:
+with open(transcript, 'r', encoding="utf8") as in_file:
     lines = list(in_file)
     first = lines[0]
     n = -1
@@ -246,8 +246,8 @@ with open(transcript, 'r') as in_file:
         n -= 1
         last = lines[n]
 
-    start = map(int, first.split(' ')[1].split('-'))
-    end = map(int, last.split(' ')[1].split('-'))
+    start = list(map(int, first.split(' ')[1].split('-')))
+    end = list(map(int, last.split(' ')[1].split('-')))
 
 start_date = datetime.date(start[0], start[1], start[2])
 end_date = datetime.date(end[0], end[1], end[2])
@@ -262,7 +262,7 @@ day_timeseries = numpy.zeros((24 * 6, 1), dtype=object)
 
 previous_timestamp = ""
 
-with open(transcript, 'r') as in_file:
+with open(transcript, 'r', encoding="utf8") as in_file:
     for line in in_file.readlines():
         line = line.lower()
 
@@ -286,7 +286,7 @@ with open(transcript, 'r') as in_file:
             message = process_message(line)
 
         # Process words in message and remove blanks
-        message = filter(None, [process_word(word) for word in message])
+        message = [process_word(word) for word in message if process_word(word) is not None]
 
         # Add words to Counters
         for word in message:
@@ -294,8 +294,7 @@ with open(transcript, 'r') as in_file:
 
             # Update timeseries data for keywords
             if word in keywords:
-                word_timeseries[keywords.index(word), calculate_days(start_date, timestamp)
-                                + 1] += 1
+                word_timeseries[keywords.index(word), calculate_days(start_date, timestamp) + 1] += 1
 
         # Update timeseries data for speakers
         speaker_timeseries[names.index(name), calculate_days(start_date, timestamp) + 1] \
@@ -336,7 +335,7 @@ for speaker in names:
 overall_total = sum(overall_words.values())
 
 # Print summary stats
-with open(results_dir + "summary.txt", 'w') as out_file:
+with open(results_dir + "summary.txt", 'w', encoding="utf8") as out_file:
     out_file.write("GENERAL\n-------\n")
     out_file.write("total length: " + str(overall_total) + " words" + "\ntime to read: " + str(
         round(overall_total / 250 / 60, 2)) + " hours\n\n")
@@ -361,13 +360,13 @@ numpy.savetxt(results_dir + "day_timeseries.txt", day_timeseries,
               delimiter="\t", fmt="%s")
 
 # Save words
-with open(results_dir + "words.txt", 'w') as out_file:
+with open(results_dir + "words.txt", 'w', encoding="utf8") as out_file:
     for speaker in names:
         for word, count in speaker_words[speaker].most_common():
             out_file.write("%s\t%s\n" % (speaker, word))
 
 # Save overall word frequencies
-with open(results_dir + "overall_word_frequencies.txt", 'w') as out_file:
+with open(results_dir + "overall_word_frequencies.txt", 'w', encoding="utf8") as out_file:
     for word, count in overall_words.most_common():
         if count > 1 and word not in stop_list and re.match("^\d+$", word) \
                 is None:
@@ -375,7 +374,7 @@ with open(results_dir + "overall_word_frequencies.txt", 'w') as out_file:
                                                                 speaker_totals[speaker] * 100, 3)))
 
 # Save speaker word frequencies
-with open(results_dir + "speaker_word_frequencies.txt", 'w') as out_file:
+with open(results_dir + "speaker_word_frequencies.txt", 'w', encoding="utf8") as out_file:
     for speaker in names:
         for word, count in speaker_words[speaker].most_common():
             if count > 1 and word not in stop_list and re.match("^\d+$", word) \
@@ -384,14 +383,14 @@ with open(results_dir + "speaker_word_frequencies.txt", 'w') as out_file:
                                                      round(count / speaker_totals[speaker] * 100, 3)))
 
 # Save overall bigram frequencies
-with open(results_dir + "overall_bigram_frequencies.txt", 'w') as out_file:
+with open(results_dir + "overall_bigram_frequencies.txt", 'w', encoding="utf8") as out_file:
     for bigram, count in overall_bigrams.most_common():
         if count > 1:
             out_file.write("%s\t%s\t%s\n" % (bigram, count, round(count /
                                                                   speaker_totals[speaker] * 100, 3)))
 
 # Save speaker bigram frequencies
-with open(results_dir + "speaker_bigram_frequencies.txt", 'w') as out_file:
+with open(results_dir + "speaker_bigram_frequencies.txt", 'w', encoding="utf8") as out_file:
     for speaker in names:
         for bigram, count in speaker_bigrams[speaker].most_common():
             if count > 1:
