@@ -331,8 +331,9 @@ for speaker in names:
 for speaker in names:
     overall_bigrams += speaker_bigrams[speaker]
 
-# Get total number of words
+# Get total number of words and bigrams
 overall_total = sum(overall_words.values())
+overall_bigram_total = sum(overall_bigrams.values())
 
 # Print summary stats
 with open(results_dir + "summary.txt", 'w', encoding="utf8") as out_file:
@@ -371,7 +372,7 @@ with open(results_dir + "overall_word_frequencies.txt", 'w', encoding="utf8") as
         if count > 1 and word not in stop_list and re.match("^\d+$", word) \
                 is None:
             out_file.write("%s\t%s\t%s\n" % (word, count, round(count /
-                                                                speaker_totals[speaker] * 100, 3)))
+                                                                overall_total * 100, 3)))
 
 # Save speaker word frequencies
 with open(results_dir + "speaker_word_frequencies.txt", 'w', encoding="utf8") as out_file:
@@ -387,7 +388,7 @@ with open(results_dir + "overall_bigram_frequencies.txt", 'w', encoding="utf8") 
     for bigram, count in overall_bigrams.most_common():
         if count > 1:
             out_file.write("%s\t%s\t%s\n" % (bigram, count, round(count /
-                                                                  speaker_totals[speaker] * 100, 3)))
+                                                                  overall_bigram_total * 100, 3)))
 
 # Save speaker bigram frequencies
 with open(results_dir + "speaker_bigram_frequencies.txt", 'w', encoding="utf8") as out_file:
@@ -395,4 +396,4 @@ with open(results_dir + "speaker_bigram_frequencies.txt", 'w', encoding="utf8") 
         for bigram, count in speaker_bigrams[speaker].most_common():
             if count > 1:
                 out_file.write("%s\t%s\t%s\t%s\n" % (speaker, bigram, count,
-                                                     round(count / speaker_totals[speaker] * 100, 3)))
+                                                     round(count / sum(speaker_bigrams[speaker].values()) * 100, 3)))
