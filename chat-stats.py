@@ -45,8 +45,7 @@ def process_name(line):
 def get_participants(transcript):
     with open(transcript, 'r', encoding="utf8") as in_file:
         names = list(set(process_name(line).lower() for line in
-                         in_file.readlines() if re.match("^\[hangouts.py\]", line) is not
-                         None))
+                         in_file.readlines() if line.startswith("[hangouts.py]")))
 
     return names
 
@@ -268,7 +267,7 @@ with open(transcript, 'r', encoding="utf8") as in_file:
 
         # Use prepended script name to differentiate between single- and
         # multi-line messages
-        if re.match("^\[hangouts.py\]", line) is not None:
+        if line.startswith("[hangouts.py]"):
             # Get timestamp of message
             timestamp = get_datetime(line)
 
