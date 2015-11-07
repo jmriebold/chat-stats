@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-""" 
+"""
 This script generates descriptive statistics from Google Hangouts logs, 
 including total words, words by speaker, etc. Hangouts transcripts should be
 in plaintext format, extracted from JSON archives (accessible at 
