@@ -282,7 +282,8 @@ with open(transcript, 'r', encoding='utf8') as in_file:
             message = process_message(line)
 
         # Process words in message and remove blanks
-        message = [process_word(word) for word in message if process_word(word) is not None and process_word(word) != '']
+        message = [process_word(word) for word in message if
+                   process_word(word) is not None and process_word(word) != '']
 
         # Add words to Counters
         for word in message:
@@ -335,18 +336,18 @@ overall_bigram_total = sum(overall_bigrams.values())
 with open(results_dir + 'summary.txt', 'w', encoding='utf8') as out_file:
     out_file.write('GENERAL\n-------\n')
     out_file.write('total length: ' + str(overall_total) + ' words' + '\ntime to read: ' + str(
-        round(overall_total / 250 / 60, 2)) + ' hours\n\n')
+            round(overall_total / 250 / 60, 2)) + ' hours\n\n')
 
     out_file.write('WORDS\n-----\n')
     for speaker, total in speaker_totals.most_common():
         out_file.write(speaker + '\t' + str(total) + '\t' + str(round(float(
-            total / overall_total * 100), 2)) + '%\n')
+                total / overall_total * 100), 2)) + '%\n')
     out_file.write('\n')
 
     out_file.write('LEXICAL DIVERSITY\n-----------------\n')
     for speaker in names:
         out_file.write(speaker + '\t' + str(round(float(len(
-            speaker_words[speaker].keys()) / speaker_totals[speaker]), 2)) + '\n')
+                speaker_words[speaker].keys()) / speaker_totals[speaker]), 2)) + '\n')
 
 # Save timeseries data
 numpy.savetxt(results_dir + 'speaker_timeseries.txt', speaker_timeseries,
