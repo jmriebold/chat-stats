@@ -282,7 +282,7 @@ with open(transcript, 'r', encoding='utf8') as in_file:
             message = process_message(line)
 
         # Process words in message and remove blanks
-        message = [process_word(word) for word in message if process_word(word) is not None]
+        message = [process_word(word) for word in message if process_word(word) is not None and process_word(word) != '']
 
         # Add words to Counters
         for word in message:
